@@ -4,7 +4,7 @@ import { DataTableComponent } from './components/data-table/data-table.component
 
 const routes: Routes = [
   {
-    path: 'data-table',
+    path: '',
     component: DataTableComponent,
   }
 ];

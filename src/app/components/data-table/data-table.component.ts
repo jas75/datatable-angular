@@ -1,4 +1,5 @@
 import {AfterViewInit, Component, ViewChild} from '@angular/core';
+import { FormBuilder } from '@angular/forms';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatTableDataSource} from '@angular/material/table';
 
@@ -17,7 +18,18 @@ export class DataTableComponent implements AfterViewInit {
   @ViewChild(MatPaginator)
   paginator!: MatPaginator;
 
+  constructor(
+    private fb: FormBuilder,
+  ) {
+    //
+  }
+
+  public onActionClick() {
+    
+  }
+
   ngAfterViewInit() {
+    console.log('ngAfterViewInit');
     this.dataSource.paginator = this.paginator;
   }
 }
