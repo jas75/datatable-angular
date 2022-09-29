@@ -12,7 +12,7 @@ import {MatTableDataSource} from '@angular/material/table';
   templateUrl: 'data-table.component.html',
 })
 export class DataTableComponent implements AfterViewInit {
-  displayedColumns: string[] = ['position', 'name', 'weight', 'symbol'];
+  displayedColumns: string[] = ['position', 'name', 'weight', 'symbol', 'action'];
   dataSource = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA);
 
   @ViewChild(MatPaginator)
