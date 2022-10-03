@@ -1,5 +1,5 @@
 import {AfterViewInit, Component, ViewChild} from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatTableDataSource} from '@angular/material/table';
 
@@ -15,9 +15,11 @@ export class DataTableComponent implements AfterViewInit {
   displayedColumns: string[] = ['position', 'name', 'weight', 'symbol', 'action'];
   dataSource = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA);
 
+  public positionToEdit!: number;
   @ViewChild(MatPaginator)
   paginator!: MatPaginator;
 
+  public rowForm!: FormGroup;
   constructor(
     private fb: FormBuilder,
   ) {
@@ -31,6 +33,34 @@ export class DataTableComponent implements AfterViewInit {
   ngAfterViewInit() {
     console.log('ngAfterViewInit');
     this.dataSource.paginator = this.paginator;
+  }
+
+  public createRowForm() {
+    this.rowForm = this.fb.group({
+      name: [''],
+      weight: [''],
+      symbol: [''],
+    });
+  }
+
+  public onEditBtnClick(element: any) {
+    console.log(element);
+    this.positionToEdit = element.position;
+    this.createRowForm();
+    this.rowForm.patchValue({
+      name: element.name,
+      weight: element.weight,
+      symbol: element.symbol,
+    })
+  }
+
+  public onRemoveBtnClick(element: any) {
+    console.log('est ce quil passe la au moins')
+    console.log(element);
+  }
+
+  public cancelRowEdition() {
+    this.positionToEdit = -1;
   }
 }
 

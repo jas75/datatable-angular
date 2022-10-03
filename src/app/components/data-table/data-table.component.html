@@ -10,7 +10,14 @@
       <!-- Name Column -->
       <ng-container matColumnDef="name">
         <th mat-header-cell *matHeaderCellDef> Name </th>
-        <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+        <td mat-cell *matCellDef="let element">
+
+          <input type="text" *ngIf="positionToEdit===element.position" [value]="rowForm.get('name')?.value"> 
+
+          <span *ngIf="positionToEdit!==element.position">
+            {{element.name}} 
+          </span>
+        </td>
       </ng-container>
   
       <!-- Weight Column -->
@@ -29,13 +36,18 @@
       <ng-container matColumnDef="action">
         <th mat-header-cell *matHeaderCellDef> Action </th>
         <td mat-cell *matCellDef="let element">
-          <a href="">
+          <button (click)="onEditBtnClick(element)" *ngIf="positionToEdit !== element.position">
             Edit
-          </a>
+          </button>
+
+          <button *ngIf="positionToEdit === element.position" (click)="cancelRowEdition()">
+            Cancel
+          </button>
           
-          <a href="">
-            Cancel 
-          </a>
+          <button (click)="onRemoveBtnClick(element)">
+            Remove
+          </button>
+          
         </td>
       </ng-container>
   
