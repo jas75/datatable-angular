@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatTableDataSource} from '@angular/material/table';
@@ -11,7 +11,7 @@ import {MatTableDataSource} from '@angular/material/table';
   styleUrls: ['data-table.component.scss'],
   templateUrl: 'data-table.component.html',
 })
-export class DataTableComponent implements AfterViewInit {
+export class DataTableComponent implements AfterViewInit, OnInit {
   displayedColumns: string[] = ['position', 'name', 'weight', 'symbol', 'action'];
   dataSource = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA);
 
@@ -35,6 +35,10 @@ export class DataTableComponent implements AfterViewInit {
     this.dataSource.paginator = this.paginator;
   }
 
+  ngOnInit(): void {
+    this.createRowForm();
+  }
+
   public createRowForm() {
     this.rowForm = this.fb.group({
       name: [''],
@@ -44,7 +48,7 @@ export class DataTableComponent implements AfterViewInit {
   }
 
   public onEditBtnClick(element: any) {
-    console.log(element);
+    // console.log(element);
     this.positionToEdit = element.position;
     this.createRowForm();
     this.rowForm.patchValue({
@@ -55,12 +59,41 @@ export class DataTableComponent implements AfterViewInit {
   }
 
   public onRemoveBtnClick(element: any) {
-    console.log('est ce quil passe la au moins')
-    console.log(element);
+    // console.log('est ce quil passe la au moins')
+    // console.log(element);
   }
 
   public cancelRowEdition() {
     this.positionToEdit = -1;
+  }
+
+  public validateRow(element: PeriodicElement) {
+    //edit ELEME?NT_DATA by position and update dataSource
+    console.log('le formulaire')
+    console.log(this.rowForm.value);
+    console.log('------------')
+    // ELEMENT_DATA = ELEMENT_DATA.map((x: PeriodicElement) => (x.position === element.position ? element : x));
+
+    ELEMENT_DATA = ELEMENT_DATA.map((x: PeriodicElement) => {
+      if (x.position === element.position) {
+        return {
+          position: x.position,
+          name: this.rowForm.value.name,
+          weight: this.rowForm.value.weight,
+          symbol: this.rowForm.value.symbol,
+        }
+      }
+      return x;
+    });
+
+    console.log('le tableau modifié')
+    console.log(ELEMENT_DATA)
+    console.log('------------')
+
+    this.dataSource.data = ELEMENT_DATA;
+    this.createRowForm();
+    this.cancelRowEdition();
+      // originalData.map(x => (x.id === id ? { ...x, updatedField: 1 } : x));
   }
 }
 
@@ -71,7 +104,7 @@ export interface PeriodicElement {
   symbol: string;
 }
 
-const ELEMENT_DATA: PeriodicElement[] = [
+let ELEMENT_DATA: PeriodicElement[] = [
   {position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H'},
   {position: 2, name: 'Helium', weight: 4.0026, symbol: 'He'},
   {position: 3, name: 'Lithium', weight: 6.941, symbol: 'Li'},

@@ -1,5 +1,5 @@
 <div class="mat-elevation-z8">
-    <table mat-table [dataSource]="dataSource">
+    <table mat-table [dataSource]="dataSource" [formGroup]="rowForm">
   
       <!-- Position Column -->
       <ng-container matColumnDef="position">
@@ -12,7 +12,7 @@
         <th mat-header-cell *matHeaderCellDef> Name </th>
         <td mat-cell *matCellDef="let element">
 
-          <input type="text" class="form-control" *ngIf="positionToEdit===element.position" [value]="rowForm.get('name')?.value"> 
+          <input type="text" class="form-control" *ngIf="positionToEdit===element.position" [value]="rowForm.get('name')?.value" formControlName="name"> 
 
           <span *ngIf="positionToEdit!==element.position">
             {{element.name}} 
@@ -24,7 +24,7 @@
       <ng-container matColumnDef="weight">
         <th mat-header-cell *matHeaderCellDef> Weight </th>
         <td mat-cell *matCellDef="let element">
-          <input type="text" class="form-control" *ngIf="positionToEdit===element.position" [value]="rowForm.get('weight')?.value">
+          <input type="text" class="form-control" *ngIf="positionToEdit===element.position" [value]="rowForm.get('weight')?.value" formControlName="weight">
           <span *ngIf="positionToEdit!==element.position">
             {{element.weight}} 
           </span> 
@@ -35,7 +35,7 @@
       <ng-container matColumnDef="symbol">
         <th mat-header-cell *matHeaderCellDef> Symbol </th>
         <td mat-cell *matCellDef="let element">
-          <input type="text" class="form-control" *ngIf="positionToEdit===element.position" [value]="rowForm.get('symbol')?.value">
+          <input type="text" class="form-control" *ngIf="positionToEdit===element.position" [value]="rowForm.get('symbol')?.value" formControlName="symbol">
            
           <span *ngIf="positionToEdit!==element.position">
             {{element.symbol}} 
@@ -51,6 +51,10 @@
             Edit
           </button>
 
+
+          <button class="btn btn-success" *ngIf="positionToEdit === element.position" (click)="validateRow(element)">
+            Valider
+          </button>
           <button class="btn btn-warning" *ngIf="positionToEdit === element.position" (click)="cancelRowEdition()">
             Cancel
           </button>
