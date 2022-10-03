@@ -59,7 +59,7 @@
             Cancel
           </button>
           
-          <button  class="btn btn-danger" (click)="onRemoveBtnClick(element)">
+          <button  class="btn btn-danger" (click)="onRemoveBtnClick(element)" *ngIf="positionToEdit !== element.position">
             Remove
           </button>
           

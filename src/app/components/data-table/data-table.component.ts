@@ -58,9 +58,16 @@ export class DataTableComponent implements AfterViewInit, OnInit {
     })
   }
 
-  public onRemoveBtnClick(element: any) {
-    // console.log('est ce quil passe la au moins')
-    // console.log(element);
+  public onRemoveBtnClick(element: PeriodicElement) {
+    let confirmation = confirm(`Sure you want to delete ${element.name}?`)
+
+    if (confirmation) {
+      ELEMENT_DATA = ELEMENT_DATA.filter((x: PeriodicElement) => x.position !== element.position);
+      
+      this.dataSource.data = ELEMENT_DATA;
+      this.createRowForm();
+      this.cancelRowEdition();
+    }
   }
 
   public cancelRowEdition() {
@@ -68,12 +75,6 @@ export class DataTableComponent implements AfterViewInit, OnInit {
   }
 
   public validateRow(element: PeriodicElement) {
-    //edit ELEME?NT_DATA by position and update dataSource
-    console.log('le formulaire')
-    console.log(this.rowForm.value);
-    console.log('------------')
-    // ELEMENT_DATA = ELEMENT_DATA.map((x: PeriodicElement) => (x.position === element.position ? element : x));
-
     ELEMENT_DATA = ELEMENT_DATA.map((x: PeriodicElement) => {
       if (x.position === element.position) {
         return {
@@ -85,15 +86,9 @@ export class DataTableComponent implements AfterViewInit, OnInit {
       }
       return x;
     });
-
-    console.log('le tableau modifié')
-    console.log(ELEMENT_DATA)
-    console.log('------------')
-
     this.dataSource.data = ELEMENT_DATA;
     this.createRowForm();
     this.cancelRowEdition();
-      // originalData.map(x => (x.id === id ? { ...x, updatedField: 1 } : x));
   }
 }
 
