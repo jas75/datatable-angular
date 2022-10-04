@@ -1,5 +1,5 @@
 import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatTableDataSource} from '@angular/material/table';
 import { saveAs } from 'file-saver';
@@ -21,6 +21,7 @@ export class DataTableComponent implements AfterViewInit, OnInit {
   paginator!: MatPaginator;
 
   public rowForm!: FormGroup;
+  public uploadForm!: FormGroup;
   constructor(
     private fb: FormBuilder,
   ) {
@@ -32,12 +33,12 @@ export class DataTableComponent implements AfterViewInit, OnInit {
   }
 
   ngAfterViewInit() {
-    console.log('ngAfterViewInit');
     this.dataSource.paginator = this.paginator;
   }
 
   ngOnInit(): void {
     this.createRowForm();
+    this.createUploadForm();
   }
 
   public createRowForm() {
@@ -49,7 +50,6 @@ export class DataTableComponent implements AfterViewInit, OnInit {
   }
 
   public onEditBtnClick(element: any) {
-    // console.log(element);
     this.positionToEdit = element.position;
     this.createRowForm();
     this.rowForm.patchValue({
@@ -94,13 +94,32 @@ export class DataTableComponent implements AfterViewInit, OnInit {
 
 
   // CSV FILE
-  public onFileSelect(event: any) {
+  public createUploadForm() {
+    this.uploadForm = this.fb.group({
+      file: ['', [Validators.required]]
+    });
+  }
 
+  public onFileSelect(event: any) {
+    console.log(event)
+    if (event.target.files.length > 0) {
+      const file = event.target.files[0];
+      this.uploadForm.get('file')?.setValue(file);
+    }
   }
 
 
   public downloadSample() {
     saveAs('assets/sample/sample.csv', 'sample.csv')
+  }
+
+
+  public onFileSubmit() {
+    if (!this.uploadForm.invalid) {
+      console.log(this.uploadForm.get('file'));
+    } else {
+      console.log('invalid');
+    }
   }
 }
 
@@ -110,6 +129,7 @@ export interface PeriodicElement {
   weight: number;
   symbol: string;
 }
+
 
 let ELEMENT_DATA: PeriodicElement[] = [
   {position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H'},
@@ -133,3 +153,13 @@ let ELEMENT_DATA: PeriodicElement[] = [
   {position: 19, name: 'Potassium', weight: 39.0983, symbol: 'K'},
   {position: 20, name: 'Calcium', weight: 40.078, symbol: 'Ca'},
 ];
+
+
+export interface Guest {
+  id: number;
+  name: string;
+  firstname: string;
+  mail: string;
+}
+
+let GUEST_DATA: Guest[] = []; 
