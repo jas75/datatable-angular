@@ -2,6 +2,7 @@ import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatTableDataSource} from '@angular/material/table';
+import { saveAs } from 'file-saver';
 
 /**
  * @title Table with pagination
@@ -89,6 +90,17 @@ export class DataTableComponent implements AfterViewInit, OnInit {
     this.dataSource.data = ELEMENT_DATA;
     this.createRowForm();
     this.cancelRowEdition();
+  }
+
+
+  // CSV FILE
+  public onFileSelect(event: any) {
+
+  }
+
+
+  public downloadSample() {
+    saveAs('assets/sample/sample.csv', 'sample.csv')
   }
 }
 
