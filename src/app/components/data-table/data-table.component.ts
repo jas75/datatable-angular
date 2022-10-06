@@ -13,8 +13,8 @@ import { saveAs } from 'file-saver';
   templateUrl: 'data-table.component.html',
 })
 export class DataTableComponent implements AfterViewInit, OnInit {
-  displayedColumns: string[] = ['position', 'name', 'weight', 'symbol', 'action'];
-  dataSource = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA);
+  displayedColumns: string[] = ['id', 'name', 'firstname', 'mail', 'action'];
+  dataSource!: MatTableDataSource<Guest>;
 
   public positionToEdit!: number;
   @ViewChild(MatPaginator)
@@ -33,7 +33,7 @@ export class DataTableComponent implements AfterViewInit, OnInit {
   }
 
   ngAfterViewInit() {
-    this.dataSource.paginator = this.paginator;
+    // this.dataSource.paginator = this.paginator;
   }
 
   ngOnInit(): void {
@@ -44,8 +44,8 @@ export class DataTableComponent implements AfterViewInit, OnInit {
   public createRowForm() {
     this.rowForm = this.fb.group({
       name: [''],
-      weight: [''],
-      symbol: [''],
+      firstname: [''],
+      mail: [''],
     });
   }
 
@@ -65,7 +65,7 @@ export class DataTableComponent implements AfterViewInit, OnInit {
     if (confirmation) {
       ELEMENT_DATA = ELEMENT_DATA.filter((x: PeriodicElement) => x.position !== element.position);
       
-      this.dataSource.data = ELEMENT_DATA;
+      this.dataSource.data = GUEST_DATA;
       this.createRowForm();
       this.cancelRowEdition();
     }
@@ -87,7 +87,7 @@ export class DataTableComponent implements AfterViewInit, OnInit {
       }
       return x;
     });
-    this.dataSource.data = ELEMENT_DATA;
+    this.dataSource.data = GUEST_DATA;
     this.createRowForm();
     this.cancelRowEdition();
   }
@@ -116,10 +116,46 @@ export class DataTableComponent implements AfterViewInit, OnInit {
 
   public onFileSubmit() {
     if (!this.uploadForm.invalid) {
-      console.log(this.uploadForm.get('file'));
+      let fileReader = new FileReader();
+      fileReader.onload = (e) => {
+        console.log(fileReader.result);
+
+        this.dataSource = new MatTableDataSource<Guest>(JSON.parse(this.csvToJson(fileReader.result as string)));
+        console.log(this.csvToJson(fileReader.result as string));
+        this.dataSource.paginator = this.paginator;
+
+      }
+
+      fileReader.readAsText(this.uploadForm.get('file')?.value);
+      // console.log(this.uploadForm.get('file'));
     } else {
       console.log('invalid');
     }
+  }
+
+  private csvToJson(csv: string) {
+    var lines=csv.split("\n");
+
+    var result = [];
+
+    // NOTE: If your columns contain commas in their values, you'll need
+    // to deal with those before doing the next step 
+    // (you might convert them to &&& or something, then covert them back later)
+    // jsfiddle showing the issue https://jsfiddle.net/
+    var headers=lines[0].split(";");
+
+    for(var i=1;i<lines.length;i++){
+      var obj: any = {};
+      var currentline=lines[i].split(";");
+
+      for(var j=0;j<headers.length;j++){
+          obj[headers[j]] = currentline[j];
+      }
+      result.push(obj);
+    }
+
+    //return result; //JavaScript object
+    return JSON.stringify(result); //JSON
   }
 }
 
