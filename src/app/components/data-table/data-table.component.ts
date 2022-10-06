@@ -118,14 +118,18 @@ export class DataTableComponent implements AfterViewInit, OnInit {
     if (!this.uploadForm.invalid) {
       let fileReader = new FileReader();
       fileReader.onload = (e) => {
-        console.log(fileReader.result);
-
+        // console.log(fileReader.result);
+        // console.log(JSON.parse(this.csvToJson(fileReader.result as string)))
         this.dataSource = new MatTableDataSource<Guest>(JSON.parse(this.csvToJson(fileReader.result as string)));
-        console.log(this.csvToJson(fileReader.result as string));
-        this.dataSource.paginator = this.paginator;
+        // console.log(this.csvToJson(fileReader.result as string));
+        
+        // setTimeout(() => {
+        //   this.dataSource.paginator = this.paginator;
+        // }, 100)
+        // this.dataSource.paginator = this.paginator;
 
       }
-
+      this.dataSource.paginator = this.paginator;
       fileReader.readAsText(this.uploadForm.get('file')?.value);
       // console.log(this.uploadForm.get('file'));
     } else {
