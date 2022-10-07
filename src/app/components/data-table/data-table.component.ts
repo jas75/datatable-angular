@@ -125,7 +125,6 @@ export class DataTableComponent implements AfterViewInit, OnInit {
         
         const lines = (fileReader.result as string).split("\n")
 
-
         const condition = lines[0].includes('id') && lines[0].includes('name') && lines[0].includes('firstname') && lines[0].includes('mail');
 
         if (condition) {
