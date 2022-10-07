@@ -51,12 +51,12 @@ export class DataTableComponent implements AfterViewInit, OnInit {
   }
 
   public onEditBtnClick(element: any) {
-    this.positionToEdit = element.position;
+    this.positionToEdit = element.id;
     this.createRowForm();
     this.rowForm.patchValue({
       name: element.name,
-      weight: element.weight,
-      symbol: element.symbol,
+      firstname: element.firstname,
+      mail: element.mail,
     })
   }
 
@@ -119,24 +119,10 @@ export class DataTableComponent implements AfterViewInit, OnInit {
     if (!this.uploadForm.invalid) {
       let fileReader = new FileReader();
       fileReader.onload = (e) => {
-        console.log('e')
-        console.log(e)
-          console.log('------')
-          console.log('fileReader.result')
-        console.log(fileReader.result)
-        console.log('------')
-        console.log(JSON.parse(this.csvToJson(fileReader.result as string)))
-        // console.log(fileReader.result);
-        // console.log(JSON.parse(this.csvToJson(fileReader.result as string)))
-        // this.dataSource = new MatTableDataSource<Guest>(JSON.parse(this.csvToJson(fileReader.result as string)));
-        // console.log(this.csvToJson(fileReader.result as string));
+    
         this.dataSource.data = JSON.parse(this.csvToJson(fileReader.result as string));
         
-        // setTimeout(() => {
-        //   this.dataSource.paginator = this.paginator;
-        // }, 100)
-        // this.dataSource.paginator = this.paginator;
-
+        GUEST_DATA = JSON.parse(this.csvToJson(fileReader.result as string));
       }
       // this.dataSource.paginator = this.paginator;
       fileReader.readAsText(this.uploadForm.get('file')?.value);
