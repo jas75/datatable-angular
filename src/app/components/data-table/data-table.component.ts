@@ -14,7 +14,6 @@ import { saveAs } from 'file-saver';
 })
 export class DataTableComponent implements AfterViewInit, OnInit {
   displayedColumns: string[] = ['id', 'name', 'firstname', 'mail', 'action'];
-  // dataSource!: MatTableDataSource<Guest>;
   dataSource = new MatTableDataSource<Guest>(GUEST_DATA);
 
   public positionToEdit!: number;
@@ -102,7 +101,6 @@ export class DataTableComponent implements AfterViewInit, OnInit {
   }
 
   public onFileSelect(event: any) {
-    // console.log(event)
     if (event.target.files.length > 0) {
       const file = event.target.files[0];
       this.uploadForm.get('file')?.setValue(file);
@@ -111,7 +109,12 @@ export class DataTableComponent implements AfterViewInit, OnInit {
 
 
   public downloadSample() {
-    saveAs('assets/sample/sample.csv', 'sample.csv')
+    saveAs('assets/sample/sample.csv', 'sample.csv');
+  }
+
+
+  public downloadWrongSample() {
+    saveAs('assets/sample/wrong-sample.csv', 'wrong-sample.csv');
   }
 
 
@@ -119,28 +122,30 @@ export class DataTableComponent implements AfterViewInit, OnInit {
     if (!this.uploadForm.invalid) {
       let fileReader = new FileReader();
       fileReader.onload = (e) => {
-    
-        this.dataSource.data = JSON.parse(this.csvToJson(fileReader.result as string));
         
-        GUEST_DATA = JSON.parse(this.csvToJson(fileReader.result as string));
+        const lines = (fileReader.result as string).split("\n")
+
+
+        const condition = lines[0].includes('id') && lines[0].includes('name') && lines[0].includes('firstname') && lines[0].includes('mail');
+
+        if (condition) {
+          this.dataSource.data = JSON.parse(this.csvToJson(fileReader.result as string));
+          GUEST_DATA = JSON.parse(this.csvToJson(fileReader.result as string));
+        } else {
+          console.log('wrong format');
+        }
       }
-      // this.dataSource.paginator = this.paginator;
       fileReader.readAsText(this.uploadForm.get('file')?.value);
-      // console.log(this.uploadForm.get('file'));
     } else {
       console.log('invalid');
     }
   }
 
   private csvToJson(csv: string) {
-    var lines=csv.split("\n");
-console.log(lines)
+    var lines = csv.split("\n");
+
     var result = [];
 
-    // NOTE: If your columns contain commas in their values, you'll need
-    // to deal with those before doing the next step 
-    // (you might convert them to &&& or something, then covert them back later)
-    // jsfiddle showing the issue https://jsfiddle.net/
     var headers=lines[0].split(";");
 
     for(var i=1;i<lines.length;i++){
@@ -152,42 +157,9 @@ console.log(lines)
       }
       result.push(obj);
     }
-
-    //return result; //JavaScript object
     return JSON.stringify(result); //JSON
   }
 }
-
-// export interface PeriodicElement {
-//   name: string;
-//   position: number;
-//   weight: number;
-//   symbol: string;
-// }
-
-
-// let ELEMENT_DATA: PeriodicElement[] = [
-//   {position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H'},
-//   {position: 2, name: 'Helium', weight: 4.0026, symbol: 'He'},
-//   {position: 3, name: 'Lithium', weight: 6.941, symbol: 'Li'},
-//   {position: 4, name: 'Beryllium', weight: 9.0122, symbol: 'Be'},
-//   {position: 5, name: 'Boron', weight: 10.811, symbol: 'B'},
-//   {position: 6, name: 'Carbon', weight: 12.0107, symbol: 'C'},
-//   {position: 7, name: 'Nitrogen', weight: 14.0067, symbol: 'N'},
-//   {position: 8, name: 'Oxygen', weight: 15.9994, symbol: 'O'},
-//   {position: 9, name: 'Fluorine', weight: 18.9984, symbol: 'F'},
-//   {position: 10, name: 'Neon', weight: 20.1797, symbol: 'Ne'},
-//   {position: 11, name: 'Sodium', weight: 22.9897, symbol: 'Na'},
-//   {position: 12, name: 'Magnesium', weight: 24.305, symbol: 'Mg'},
-//   {position: 13, name: 'Aluminum', weight: 26.9815, symbol: 'Al'},
-//   {position: 14, name: 'Silicon', weight: 28.0855, symbol: 'Si'},
-//   {position: 15, name: 'Phosphorus', weight: 30.9738, symbol: 'P'},
-//   {position: 16, name: 'Sulfur', weight: 32.065, symbol: 'S'},
-//   {position: 17, name: 'Chlorine', weight: 35.453, symbol: 'Cl'},
-//   {position: 18, name: 'Argon', weight: 39.948, symbol: 'Ar'},
-//   {position: 19, name: 'Potassium', weight: 39.0983, symbol: 'K'},
-//   {position: 20, name: 'Calcium', weight: 40.078, symbol: 'Ca'},
-// ];
 
 
 export interface Guest {
