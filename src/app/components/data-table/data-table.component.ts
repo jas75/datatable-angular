@@ -141,9 +141,12 @@ export class DataTableComponent implements AfterViewInit, OnInit {
   }
 
   private csvToJson(csv: string) {
+
+    // mail regex
+    '^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,3})+$'
     var lines = csv.split("\n");
  
-    var result = [];
+    var result: Guest[] = [];
 
     var headers=lines[0].split(";");
  
@@ -158,14 +161,25 @@ export class DataTableComponent implements AfterViewInit, OnInit {
     }
     return JSON.stringify(result); //JSON
   }
+
+  public getErrors() {
+    
+  }
 }
 
+// export interface IncorrectItem {
+//   id: number;
+//   line?: number;
+//   type: string;
+// }
 
 export interface Guest {
   id: number;
   name: string;
   firstname: string;
   mail: string;
+  error?: boolean;
+  errorType?: string;
 }
 
 let GUEST_DATA: Guest[] = []; 
